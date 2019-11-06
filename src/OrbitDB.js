@@ -167,6 +167,8 @@ class OrbitDB {
 
     //Remove event listeners
     this.events.removeAllListeners('open')
+    this.events.removeAllListeners('load')
+
 
     const caches = Object.keys(this.caches)
     for (const directory of caches) {
@@ -314,6 +316,7 @@ class OrbitDB {
     const dir = db && db.options.directory ? db.options.directory : this.directory
     await this._requestCache(address, dir, db._cache)
     this.stores[address] = db
+    this.events.emit('load', address)
   }
 
   async _determineAddress (name, type, options = {}) {
