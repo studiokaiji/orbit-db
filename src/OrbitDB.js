@@ -413,9 +413,10 @@ class OrbitDB {
       } else {
         logger.warn(`Not a valid OrbitDB address '${address}', creating the database`)
         options.overwrite = options.overwrite ? options.overwrite : true
+        const events = this.events
         return this.create(address, options.type, options).then((db) => {
-          db.events.on('ready', (address, heads) => this.events.emit('ready', address, heads))
-          this.events.emit('open', db.address.toString())
+          db.events.on('ready', (address, heads) => events.emit('ready', address, heads))
+          events.emit('open', db.address.toString())
           return db
         })
       }
@@ -453,9 +454,10 @@ class OrbitDB {
 
     // Open the the database
     options = Object.assign({}, options, { accessControllerAddress: manifest.accessController, meta: manifest.meta })
+    const events = this.events
     return this._createStore(manifest.type, dbAddress, options).then((db) => {
-      db.events.on('ready', (address, heads) => this.events.emit('ready', address, heads))
-      this.events.emit('open', db.address.toString())
+      db.events.on('ready', (address, heads) => events.emit('ready', address, heads))
+      events.emit('open', db.address.toString())
       return db
     })
   }
